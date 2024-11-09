@@ -17,7 +17,7 @@
             <div class="cart" v-on:click="showCart" v-if="enableCartBtn">
                 <button>
                   <i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> 
-                  <span class="cart-count">{{ cartItemCount }}</span>
+                  <span cla ss="cart-count">{{ cartItemCount }}</span>
                 </button>
               </div>
               <div class="cart" disabled="disabled" v-else>
@@ -25,9 +25,16 @@
               </div>
           </header>
     <main>
+        <div v-if="orderSubmitted" class="order-submitted">
+            <div>
+            <h2 class="unlock-regular ">Order Submitted</h2>
+            <br>
+            <h2 class="josefin-sans-text">Thank you for your purchase!</h2>
+          </div>
+          <button class="back-to-products-btn" @click="returnToProducts">Continue Shopping</button>
+          </div>
 
-
-        <div v-if="showProduct" class="productsDiv main">
+        <div v-else-if="showProduct" class="productsDiv main">
         <div class="searchSortdiv josefin-sans-text" >
             <label>Search:</label>
             <input type="text" v-model="searchQuery" placeholder="Search activities..." />
@@ -100,8 +107,8 @@
                     </div>
                   </div>
               </div>
-              <div class="cart checkoutBtn">
-                <button >Checkout</button>
+              <div class="cart checkoutBtn" v-on:click="showCheckout">
+                <button :disabled="!canCheckout">Checkout</button>
               </div>
             </div>
           </div>
@@ -148,6 +155,9 @@
     );
   });
           },
+          canCheckout() {
+            return this.order.firstname && this.order.lastname && this.order.phone && !this.nameError && !this.phoneError;
+          }
         },
          
         methods: {         
@@ -182,7 +192,19 @@
             const phoneRegex = /^[0-9]+$/;
             this.phoneError = phoneRegex.test(phone) ? '' : "Phone number must contain numbers only.";
           },
-        
+          showCheckout() {
+            if (this.canCheckout) {
+              this.orderSubmitted = true;
+              this.showCartItems = false;
+            }
+          },
+          returnToProducts() {
+            this.enableCartBtn=false;
+                    this.orderSubmitted = false;
+                    this.showProduct = true;
+                    this.cart = []; // Clear the cart
+                    this.order = { firstname: "", lastname: "", phone: "" }; // Reset customer info
+                }
         }
 
           
