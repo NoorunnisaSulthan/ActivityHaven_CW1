@@ -39,11 +39,12 @@
                   <h3 class="unlock-regular">{{ activity.subject }}</h3>
                   <p class="josefin-sans-text">Location: {{ activity.location }}</p>
                   <p class="josefin-sans-text">Price: {{ activity.price }}</p>
-                  <p class="josefin-sans-text">Spaces Available: 5</p>
-                  <button class="add-to-cart josefin-sans-text" v-on:click="addToCart(activity.id - 1)">
+                  <p class="josefin-sans-text">Spaces Available: {{ activity.spaces - cartCount(activity.id) }}</p>
+                 
+                  <button class="add-to-cart josefin-sans-text" v-on:click="addToCart(activity.id - 1)" v-if="canAddToCart(activity)">
                     Add to Cart
                   </button>
-                 
+                  <button disabled="disabled" v-else>Add to Cart</button>
               </div>
             </div>
           </div>
@@ -68,7 +69,16 @@
             addToCart(index) {
             this.cart.push(this.activities[index].id);
             this.enableCartBtn = true;
-          },}
+          },
+          canAddToCart(activity) {
+            return this.cart.filter(id => id === activity.id).length < activity.spaces;
+          },
+          cartCount(id) {
+            return this.cart.filter(item => item === id).length;
+          }
+        }
+
+          
         });
       </script>
 </body>
