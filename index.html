@@ -25,10 +25,26 @@
               </div>
           </header>
     <main>
+        <div class="searchSortdiv josefin-sans-text" >
+            <label>Search:</label>
+            <input type="text" v-model="searchQuery" placeholder="Search activities..." />
+            <label>Sort by: </label>
+            <select v-model="sortBy">
+              <option value="subject">Subject</option>
+              <option value="location">Location</option>
+              <option value="price">Price</option>
+              <option value="spaces">Spaces</option>
+            </select>
+            <label>Order: </label>
+            <select v-model="sortOrder">
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+          </div>
         <div class="card-container">
             <div
               class="flip-card"
-              v-for="activity in activities"
+              v-for="activity in filteredActivities"
               :key="activity.id"
             >
               <div class="flip-card-inner">
@@ -58,13 +74,36 @@
             activities: activities,
             enableCartBtn: false,
             cart: [],
+            searchQuery: '',
+            sortBy: 'subject',
+          sortOrder: 'asc',
           },
           computed:{
             cartItemCount() {
             return this.cart.length || "";
           },
+          sortedActivities() {
+            return [...this.activities].sort((a, b) => {
+              let modifier = this.sortOrder === 'asc' ? 1 : -1;
+              if (this.sortBy === 'price' || this.sortBy === 'spaces') {
+                return (a[this.sortBy] - b[this.sortBy]) * modifier;
+              } else {
+                return a[this.sortBy].localeCompare(b[this.sortBy]) * modifier;
+              }
+            });
           },
-          methods: {         
+          filteredActivities() {
+  return this.sortedActivities.filter(activity => {
+    const query = this.searchQuery.toLowerCase();
+    return (
+      activity.subject.toLowerCase().includes(query) ||
+      activity.location.toLowerCase().includes(query)
+    );
+  });
+          },
+        },
+         
+        methods: {         
             
             addToCart(index) {
             this.cart.push(this.activities[index].id);
