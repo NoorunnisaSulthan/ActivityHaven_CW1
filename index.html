@@ -85,7 +85,20 @@
                     </div>
                   </div>
                 </div>
-               
+                <div class="customerInfo">
+                    <div>
+                      <h3 class="unlock-regular">Your Information</h3>
+                      <p><strong>First Name: </strong><input v-model.trim="order.firstname" @blur="validateName(order.firstname)" /><span v-if="nameError" class="error">{{ nameError }}</span></p>
+                      <p><strong>Last Name: </strong><input v-model="order.lastname" @blur="validateName(order.lastname)" /><span v-if="nameError" class="error">{{ nameError }}</span></p>
+                      <p><strong>Phone:</strong><input v-model="order.phone" @blur="validatePhone(order.phone)" /><span v-if="phoneError" class="error">{{ phoneError }}</span></p>
+                    </div>
+                    <div>
+                      <h3 class="unlock-regular">Order Information</h3>
+                      <p>First Name: {{ order.firstname }}</p>
+                      <p>Last Name: {{ order.lastname }}</p>
+                      <p>Phone: {{ order.phone }}</p>
+                    </div>
+                  </div>
               </div>
               <div class="cart checkoutBtn">
                 <button >Checkout</button>
@@ -107,7 +120,10 @@
           sortOrder: 'asc',
           showProduct: true,
           showCartItems: true,
-        
+          order: { firstname: "", lastname: "", phone: "" },
+          nameError: '',
+          phoneError: '',
+          orderSubmitted: false,
           },
           computed:{
             cartItemCount() {
@@ -157,6 +173,14 @@
             }
             
             
+          },
+          validateName(name) {
+            const nameRegex = /^[A-Za-z]+$/;
+            this.nameError = nameRegex.test(name) ? '' : "Name must contain letters only.";
+          },
+          validatePhone(phone) {
+            const phoneRegex = /^[0-9]+$/;
+            this.phoneError = phoneRegex.test(phone) ? '' : "Phone number must contain numbers only.";
           },
         
         }
