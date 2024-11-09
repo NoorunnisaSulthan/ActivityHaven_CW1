@@ -7,11 +7,22 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="index.css" />
     <script src="activities.js"></script>
+     <!-- font awesome icons -->
+     <script src="https://kit.fontawesome.com/b3a9ac332d.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="app">
         <header>
             <h1 v-text="sitename" class=" sitename unlock-regular"></h1>
+            <div class="cart" v-if="enableCartBtn">
+                <button>
+                  <i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> 
+                  <span class="cart-count">{{ cartItemCount }}</span>
+                </button>
+              </div>
+              <div class="cart" disabled="disabled" v-else>
+                <button class="disabled-btn"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> </button>
+              </div>
           </header>
     <main>
         <div class="card-container">
@@ -29,7 +40,7 @@
                   <p class="josefin-sans-text">Location: {{ activity.location }}</p>
                   <p class="josefin-sans-text">Price: {{ activity.price }}</p>
                   <p class="josefin-sans-text">Spaces Available: 5</p>
-                  <button class="add-to-cart josefin-sans-text">
+                  <button class="add-to-cart josefin-sans-text" v-on:click="addToCart(activity.id - 1)">
                     Add to Cart
                   </button>
                  
@@ -44,9 +55,20 @@
           data: {
             sitename: "Activity Haven",
             activities: activities,
+            enableCartBtn: false,
+            cart: [],
           },
-          computed:{},
-          methods: {}
+          computed:{
+            cartItemCount() {
+            return this.cart.length || "";
+          },
+          },
+          methods: {         
+            
+            addToCart(index) {
+            this.cart.push(this.activities[index].id);
+            this.enableCartBtn = true;
+          },}
         });
       </script>
 </body>
