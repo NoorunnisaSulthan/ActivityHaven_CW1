@@ -81,7 +81,7 @@
                       <h2 class="product-title">{{ activities[cartitem - 1].subject }}</h2>
                       <p class="product-location">{{ activities[cartitem - 1].location }}</p>
                       <p class="product-price">AED {{ activities[cartitem - 1].price }}</p>
-                      <button style="border-radius: 50px; padding: 10px 10px ;font-size: 10px;">Remove</button>
+                      <button  v-on:click="removefromcart(activities[cartitem - 1].id)" style="border-radius: 50px; padding: 10px 10px ;font-size: 10px;">Remove</button>
                     </div>
                   </div>
                 </div>
@@ -107,6 +107,7 @@
           sortOrder: 'asc',
           showProduct: true,
           showCartItems: true,
+        
           },
           computed:{
             cartItemCount() {
@@ -147,6 +148,15 @@
           },
           showCart() {
             this.showProduct = !this.showProduct;
+          },
+          removefromcart(id) {
+            const index = this.cart.findIndex(x => x === id);
+            this.cart.splice(index, 1);
+            if(this.cart.length==0){
+              this.showProduct=true
+            }
+            
+            
           },
         
         }
