@@ -1,51 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Activity Haven</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="index.css" />
     <script src="activities.js"></script>
-     <!-- google fonts -->
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Unlock&display=swap" rel="stylesheet">
-     <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
-     <!-- font awesome icons -->
-     <script src="https://kit.fontawesome.com/b3a9ac332d.js" crossorigin="anonymous"></script>
-</head>
-<body>
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Unlock&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- font awesome icons -->
+    <script
+      src="https://kit.fontawesome.com/b3a9ac332d.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
     <div id="app">
-        <header>
-            <h1 v-text="sitename" class=" sitename unlock-regular"></h1>
-            <div class="cart" v-on:click="showCart" v-if="enableCartBtn">
-                <button>
-                  <i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> 
-                  <span cla ss="cart-count">{{ cartItemCount }}</span>
-                </button>
-              </div>
-              <div class="cart" disabled="disabled" v-else>
-                <button class="disabled-btn"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> </button>
-              </div>
-          </header>
-    <main>
+      <header>
+        <h1 v-text="sitename" class="sitename unlock-regular"></h1>
+        <div class="cart" v-on:click="showCart" v-if="enableCartBtn">
+          <button>
+            <i class="fa-solid fa-cart-shopping" style="font-size: 20px"></i>
+            <span cla ss="cart-count">{{ cartItemCount }}</span>
+          </button>
+        </div>
+        <div class="cart" disabled="disabled" v-else>
+          <button class="disabled-btn">
+            <i class="fa-solid fa-cart-shopping" style="font-size: 20px"></i>
+          </button>
+        </div>
+      </header>
+      <main>
         <div v-if="orderSubmitted" class="order-submitted">
-            <div>
-            <h2 class="unlock-regular ">Order Submitted</h2>
-            <br>
+          <div>
+            <h2 class="unlock-regular">Order Submitted</h2>
+            <br />
             <h2 class="josefin-sans-text">Thank you for your purchase!</h2>
           </div>
-          <button class="back-to-products-btn" @click="returnToProducts">Continue Shopping</button>
-          </div>
+          <button class="back-to-products-btn" @click="returnToProducts">
+            Continue Shopping
+          </button>
+        </div>
 
         <div v-else-if="showProduct" class="productsDiv main">
-        <div class="searchSortdiv josefin-sans-text" >
+          <div class="searchSortdiv josefin-sans-text">
             <label>Search:</label>
-            <input type="text" v-model="searchQuery" placeholder="Search activities..." />
+            <input
+              type="text"
+              v-model="searchQuery"
+              placeholder="Search activities..."
+            />
             <label>Sort by: </label>
             <select v-model="sortBy">
-              <option value="subject">Subject</option>
+              <option value="activity">Activity</option>
               <option value="location">Location</option>
               <option value="price">Price</option>
               <option value="spaces">Spaces</option>
@@ -56,7 +73,7 @@
               <option value="desc">Descending</option>
             </select>
           </div>
-        <div class="card-container">
+          <div class="card-container">
             <div
               class="flip-card"
               v-for="activity in filteredActivities"
@@ -67,135 +84,212 @@
                   <figure>
                     <img v-bind:src="activity.image" class="activityimg" />
                   </figure>
-                  <h3 class="unlock-regular">{{ activity.subject }}</h3>
-                  <p class="josefin-sans-text">Location: {{ activity.location }}</p>
+                  <h3 class="unlock-regular">{{ activity.activity }}</h3>
+                  <p class="josefin-sans-text">
+                    Location: {{ activity.location }}
+                  </p>
                   <p class="josefin-sans-text">Price: {{ activity.price }}</p>
-                  <p class="josefin-sans-text">Spaces Available: {{ activity.spaces - cartCount(activity.id) }}</p>
-                 
-                  <button class="add-to-cart josefin-sans-text" v-on:click="addToCart(activity.id - 1)" v-if="canAddToCart(activity)">
+                  <p class="josefin-sans-text">
+                    Spaces Available: {{ activity.spaces -
+                    cartCount(activity.id) }}
+                  </p>
+
+                  <button
+                    class="add-to-cart josefin-sans-text"
+                    v-on:click="addToCart(activity)"
+                    v-if="canAddToCart(activity)"
+                  >
                     Add to Cart
                   </button>
                   <button disabled="disabled" v-else>Add to Cart</button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+          <p>The response: <span id="response"></span></p>
         </div>
 
         <div v-else class="josefin-sans-text cartSection">
-            <div v-if="showCartItems" style="margin-left: 30px;">
-              <div class="cartProductsDiv">
-                <h2 class="unlock-regular" style="margin-left: 50px;">Your Products</h2>
-                <div class="body cart-container">
-                  <div class="cart-product josefin-sans-text" v-for="cartitem in cart">
-                    <img v-bind:src="activities[cartitem - 1].image" alt="Activity" class="product-image">
-                    <div class="product-details">
-                      <h2 class="product-title">{{ activities[cartitem - 1].subject }}</h2>
-                      <p class="product-location">{{ activities[cartitem - 1].location }}</p>
-                      <p class="product-price">AED {{ activities[cartitem - 1].price }}</p>
-                      <button  v-on:click="removefromcart(activities[cartitem - 1].id)" style="border-radius: 50px; padding: 10px 10px ;font-size: 10px;">Remove</button>
-                    </div>
+          <div v-if="showCartItems" style="margin-left: 30px">
+            <div class="cartProductsDiv">
+              <h2 class="unlock-regular" style="margin-left: 50px">
+                Your Products
+              </h2>
+              <div class="body cart-container">
+                <div
+                  class="cart-product josefin-sans-text"
+                  v-for="cartitem in cart"
+                >
+                  <img
+                    v-bind:src="activities[cartitem - 1].image"
+                    alt="Activity"
+                    class="product-image"
+                  />
+                  <div class="product-details">
+                    <h2 class="product-title">
+                      {{ activities[cartitem - 1].subject }}
+                    </h2>
+                    <p class="product-location">
+                      {{ activities[cartitem - 1].location }}
+                    </p>
+                    <p class="product-price">
+                      AED {{ activities[cartitem - 1].price }}
+                    </p>
+                    <button
+                      v-on:click="removefromcart(activities[cartitem - 1].id)"
+                      style="
+                        border-radius: 50px;
+                        padding: 10px 10px;
+                        font-size: 10px;
+                      "
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
-                <div class="customerInfo">
-                    <div>
-                      <h3 class="unlock-regular">Your Information</h3>
-                      <p><strong>First Name: </strong><input v-model.trim="order.firstname" @blur="validateName(order.firstname)" /><span v-if="nameError" class="error">{{ nameError }}</span></p>
-                      <p><strong>Last Name: </strong><input v-model="order.lastname" @blur="validateName(order.lastname)" /><span v-if="nameError" class="error">{{ nameError }}</span></p>
-                      <p><strong>Phone:</strong><input v-model="order.phone" @blur="validatePhone(order.phone)" /><span v-if="phoneError" class="error">{{ phoneError }}</span></p>
-                    </div>
-                    <div>
-                      <h3 class="unlock-regular">Order Information</h3>
-                      <p>First Name: {{ order.firstname }}</p>
-                      <p>Last Name: {{ order.lastname }}</p>
-                      <p>Phone: {{ order.phone }}</p>
-                    </div>
-                  </div>
               </div>
-              <div class="cart checkoutBtn" v-on:click="showCheckout">
-                <button :disabled="!canCheckout">Checkout</button>
+              <div class="customerInfo">
+                <div>
+                  <h3 class="unlock-regular">Your Information</h3>
+                  <p>
+                    <strong>First Name: </strong
+                    ><input
+                      v-model.trim="order.firstname"
+                      @blur="validateName(order.firstname)"
+                    /><span v-if="nameError" class="error"
+                      >{{ nameError }}</span
+                    >
+                  </p>
+                  <p>
+                    <strong>Last Name: </strong
+                    ><input
+                      v-model="order.lastname"
+                      @blur="validateName(order.lastname)"
+                    /><span v-if="nameError" class="error"
+                      >{{ nameError }}</span
+                    >
+                  </p>
+                  <p>
+                    <strong>Phone:</strong
+                    ><input
+                      v-model="order.phone"
+                      @blur="validatePhone(order.phone)"
+                    /><span v-if="phoneError" class="error"
+                      >{{ phoneError }}</span
+                    >
+                  </p>
+                </div>
+                <div>
+                  <h3 class="unlock-regular">Order Information</h3>
+                  <p>First Name: {{ order.firstname }}</p>
+                  <p>Last Name: {{ order.lastname }}</p>
+                  <p>Phone: {{ order.phone }}</p>
+                </div>
               </div>
             </div>
+            <div class="cart checkoutBtn" v-on:click="showCheckout">
+              <button :disabled="!canCheckout">Checkout</button>
+            </div>
           </div>
-    </main>
-</div>
+        </div>
+      </main>
+    </div>
     <script type="text/javascript">
-        let webstore = new Vue({
-          el: "#app",
-          data: {
-            sitename: "Activity Haven",
-            activities: activities,
-            enableCartBtn: false,
-            cart: [],
-            searchQuery: '',
-            sortBy: 'subject',
-          sortOrder: 'asc',
+      let webstore = new Vue({
+        el: "#app",
+        data: {
+          sitename: "Activity Haven",
+          activities: [],
+          enableCartBtn: false,
+          cart: [],
+          searchQuery: "",
+          sortBy: "activity",
+          sortOrder: "asc",
           showProduct: true,
           showCartItems: true,
           order: { firstname: "", lastname: "", phone: "" },
-          nameError: '',
-          phoneError: '',
+          nameError: "",
+          phoneError: "",
           orderSubmitted: false,
-          },
-          computed:{
-            cartItemCount() {
+        },
+        computed: {
+          cartItemCount() {
             return this.cart.length || "";
           },
           sortedActivities() {
             return [...this.activities].sort((a, b) => {
-              let modifier = this.sortOrder === 'asc' ? 1 : -1;
-              if (this.sortBy === 'price' || this.sortBy === 'spaces') {
+              let modifier = this.sortOrder === "asc" ? 1 : -1;
+              console.log("Sorting:", a, b); // Debugging log
+              if (this.sortBy === "price" || this.sortBy === "spaces") {
                 return (a[this.sortBy] - b[this.sortBy]) * modifier;
               } else {
+                if (!a[this.sortBy] || !b[this.sortBy]) {
+                  console.warn("Missing sort key in:", a, b);
+                  return 0; // Skip comparison for invalid objects
+                }
                 return a[this.sortBy].localeCompare(b[this.sortBy]) * modifier;
               }
             });
           },
+
           filteredActivities() {
-  return this.sortedActivities.filter(activity => {
-    const query = this.searchQuery.toLowerCase();
-    return (
-      activity.subject.toLowerCase().includes(query) ||
-      activity.location.toLowerCase().includes(query)
-    );
-  });
+            console.log("came here");
+
+            return this.sortedActivities.filter((activity) => {
+              const query = this.searchQuery.toLowerCase();
+              return (
+                activity.activity.toLowerCase().includes(query) ||
+                activity.location.toLowerCase().includes(query)
+              );
+            });
           },
           canCheckout() {
-            return this.order.firstname && this.order.lastname && this.order.phone && !this.nameError && !this.phoneError;
-          }
+            return (
+              this.order.firstname &&
+              this.order.lastname &&
+              this.order.phone &&
+              !this.nameError &&
+              !this.phoneError
+            );
+          },
         },
-         
-        methods: {         
+
+        methods: {
+          addToCart(activity) {
             
-            addToCart(index) {
-            this.cart.push(this.activities[index].id);
             this.enableCartBtn = true;
+         
           },
           canAddToCart(activity) {
-            return this.cart.filter(id => id === activity.id).length < activity.spaces;
+            return (
+              this.cart.filter((id) => id === activity.id).length <
+              activity.spaces
+            );
           },
           cartCount(id) {
-            return this.cart.filter(item => item === id).length;
+            return this.cart.filter((item) => item === id).length;
           },
           showCart() {
             this.showProduct = !this.showProduct;
           },
           removefromcart(id) {
-            const index = this.cart.findIndex(x => x === id);
+            const index = this.cart.findIndex((x) => x === id);
             this.cart.splice(index, 1);
-            if(this.cart.length==0){
-              this.showProduct=true
+            if (this.cart.length == 0) {
+              this.showProduct = true;
             }
-            
-            
           },
           validateName(name) {
             const nameRegex = /^[A-Za-z]+$/;
-            this.nameError = nameRegex.test(name) ? '' : "Name must contain letters only.";
+            this.nameError = nameRegex.test(name)
+              ? ""
+              : "Name must contain letters only.";
           },
           validatePhone(phone) {
             const phoneRegex = /^[0-9]+$/;
-            this.phoneError = phoneRegex.test(phone) ? '' : "Phone number must contain numbers only.";
+            this.phoneError = phoneRegex.test(phone)
+              ? ""
+              : "Phone number must contain numbers only.";
           },
           showCheckout() {
             if (this.canCheckout) {
@@ -204,16 +298,40 @@
             }
           },
           returnToProducts() {
-            this.enableCartBtn=false;
-                    this.orderSubmitted = false;
-                    this.showProduct = true;
-                    this.cart = []; // Clear the cart
-                    this.order = { firstname: "", lastname: "", phone: "" }; // Reset customer info
-                }
-        }
+            this.enableCartBtn = false;
+            this.orderSubmitted = false;
+            this.showProduct = true;
+            this.cart = []; // Clear the cart
+            this.order = { firstname: "", lastname: "", phone: "" }; // Reset customer info
+          },
+        },
 
-          
-        });
-      </script>
-</body>
+        created: function () {
+          console.log("requesting data from server ...");
+          fetch("http://localhost:3000/collection/activities", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then((responseJSON) => {
+              console.log("Response received:", responseJSON);
+              document.getElementById("response").innerText =
+                JSON.stringify(responseJSON);
+              this.activities = responseJSON;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("error").innerText = error.message;
+            });
+        },
+      });
+    </script>
+  </body>
 </html>
