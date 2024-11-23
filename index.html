@@ -362,13 +362,42 @@
           showCart() {
             this.showProduct = !this.showProduct;
           },
-          removefromcart(id) {
-            const index = this.cart.findIndex((x) => x === id);
-            this.cart.splice(index, 1);
-            if (this.cart.length == 0) {
-              this.showProduct = true;
-            }
-          },
+          async removefromcart(id) {
+  try {
+    console.log(`Attempting to remove item with ID: ${id}`);  // Log the ID
+
+    // Step 1: Send DELETE request to the backend
+    const response = await fetch(`http://localhost:3000/collection/cart/${id}`, {
+      method: "DELETE", // DELETE request to remove the item
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete item with ID: ${id}`);
+    }
+
+    // Success: Log the response
+    const data = await response.json();
+    console.log("Backend response:", data);
+this.cart=data
+    // Remove from cart array in frontend
+    const index = this.cart.findIndex((x) => x === id);
+    if (index > -1) {
+      this.cart.splice(index, 1);
+    }
+
+    // If no items left in cart, show the product
+    if (this.cart.length === 0) {
+      this.showProduct = true;
+    }
+
+  } catch (error) {
+    console.error("Error removing item from cart:", error);
+  }
+}
+,
           validateName(name) {
             const nameRegex = /^[A-Za-z]+$/;
             this.nameError = nameRegex.test(name)
