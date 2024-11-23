@@ -121,22 +121,22 @@
                   v-for="cartitem in cart"
                 >
                   <img
-                    v-bind:src="activities[cartitem - 1].image"
+                    v-bind:src="cartitem.activity.image"
                     alt="Activity"
                     class="product-image"
                   />
                   <div class="product-details">
                     <h2 class="product-title">
-                      {{ activities[cartitem - 1].subject }}
+                      {{ cartitem.activity.activity }}
                     </h2>
                     <p class="product-location">
-                      {{ activities[cartitem - 1].location }}
+                      {{cartitem.activity.location }}
                     </p>
                     <p class="product-price">
-                      AED {{ activities[cartitem - 1].price }}
+                      AED {{ cartitem.activity.price }}
                     </p>
                     <button
-                      v-on:click="removefromcart(activities[cartitem - 1].id)"
+                      v-on:click="removefromcart(cartitem._id)"
                       style="
                         border-radius: 50px;
                         padding: 10px 10px;
@@ -255,11 +255,101 @@
         },
 
         methods: {
-          addToCart(activity) {
-            
-            this.enableCartBtn = true;
-         
-          },
+          async updateInventory(activityId, spaces) {
+    try {
+      const response = await fetch(`http://localhost:3000/collection/activities/${activityId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ spaces: spaces - 1 }), // Decrement inventory
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update inventory: ${response.status}`);
+      }
+
+      const updatedActivity = await response.json(); // Parse the updated activity from the response
+      console.log("Updated activity response:", updatedActivity.msg.spaces);
+
+      // Find the activity in the local state
+      const index = this.activities.findIndex(activity => activity._id === activityId);
+
+      if (index !== -1) {
+        // Ensure `updatedActivity.spaces` exists before assigning
+        if (updatedActivity.msg.spaces !== undefined) {
+          this.activities[index].spaces = updatedActivity.msg.spaces;
+        } else {
+          console.error("Updated activity does not contain spaces field!");
+        }
+      } else {
+        console.error("Activity not found in local state!");
+      }
+
+      console.log("Inventory updated successfully:", updatedActivity);
+      return true; // Indicate success
+    } catch (error) {
+      console.error("Error updating inventory:", error);
+      return false; // Indicate failure
+    }
+  },
+
+  // Function to add an activity to the cart
+  async addToCart(activity) {
+    const activityId = activity._id;
+    const spaces = activity.spaces;
+
+    // Step 1: Update the inventory
+    const isInventoryUpdated = await this.updateInventory(activityId, spaces);
+
+    if (!isInventoryUpdated) {
+      console.error("Failed to update inventory. Aborting cart addition.");
+      return;
+    }
+
+    // Step 2: Add to cart
+    try {
+      const response = await fetch("http://localhost:3000/collection/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({activity}), // Send the activity details
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to add to cart: ${response.status}`);
+      }
+
+      const data = await response.json(); // Parse the server response
+      console.log("Activity added to cart successfully:", data);
+
+      // Enable the cart button if needed
+      this.enableCartBtn = true;
+    } catch (error) {
+      console.error("Error adding activity to cart:", error);
+    }
+    fetch("http://localhost:3000/collection/cart", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then((responseJSON) => {
+              console.log("Response received:", responseJSON);
+              this.cart = responseJSON;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("error").innerText = error.message;
+            });
+  },
           canAddToCart(activity) {
             return (
               this.cart.filter((id) => id === activity.id).length <
@@ -325,6 +415,26 @@
               document.getElementById("response").innerText =
                 JSON.stringify(responseJSON);
               this.activities = responseJSON;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("error").innerText = error.message;
+            });
+            fetch("http://localhost:3000/collection/cart", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then((responseJSON) => {
+              console.log("Response received:", responseJSON);
+              this.cart = responseJSON;
             })
             .catch((error) => {
               console.error("Error:", error);
