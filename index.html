@@ -59,7 +59,9 @@
               type="text"
               v-model="searchQuery"
               placeholder="Search activities..."
+              @input="searchActivities"
             />
+
             <label>Sort by: </label>
             <select v-model="sortBy">
               <option value="activity">Activity</option>
@@ -106,7 +108,6 @@
               </div>
             </div>
           </div>
-        
         </div>
 
         <div v-else class="josefin-sans-text cartSection">
@@ -238,9 +239,7 @@
           },
 
           filteredActivities() {
-            console.log("came here");
-
-            return this.sortedActivities.filter((activity) => {
+            return this.activities.filter((activity) => {
               const query = this.searchQuery.toLowerCase();
               return (
                 activity.activity.toLowerCase().includes(query) ||
@@ -248,6 +247,7 @@
               );
             });
           },
+
           canCheckout() {
             return (
               this.order.firstname &&
@@ -260,7 +260,27 @@
         },
 
         methods: {
-          async addOrders(order,cart){
+          async searchActivities() {
+            if (this.searchQuery.trim() === "") {
+              this.activities = activities; // Clear activities if no search query
+              return;
+            }
+            try {
+              const response = await fetch(
+                `http://localhost:3000/search?q=${encodeURIComponent(
+                  this.searchQuery
+                )}`
+              );
+              if (!response.ok) {
+                throw new Error("Failed to fetch search results");
+              }
+              const data = await response.json();
+              this.activities = data; 
+            } catch (error) {
+              console.error("Error fetching search results:", error);
+            }
+          },
+          async addOrders(order, cart) {
             try {
               const response = await fetch(
                 "http://localhost:3000/collection/orders",
@@ -283,27 +303,31 @@
               // Enable the cart button if needed
               this.enableCartBtn = true;
 
-              const clearCartResponse = await fetch("http://localhost:3000/collection/cart", {
-      method: "DELETE",
-    });
+              const clearCartResponse = await fetch(
+                "http://localhost:3000/collection/cart",
+                {
+                  method: "DELETE",
+                }
+              );
 
-    if (!clearCartResponse.ok) {
-      throw new Error(`Failed to clear cart: ${clearCartResponse.status}`);
-    }
+              if (!clearCartResponse.ok) {
+                throw new Error(
+                  `Failed to clear cart: ${clearCartResponse.status}`
+                );
+              }
 
-    const clearCartData = await clearCartResponse.json();
-    console.log("Cart cleared successfully:", clearCartData);
+              const clearCartData = await clearCartResponse.json();
+              console.log("Cart cleared successfully:", clearCartData);
 
-    // Step 3: Update the cart state (e.g., empty the frontend cart array)
-    this.cart = []; // Clear the cart array on the frontend
+              // Step 3: Update the cart state (e.g., empty the frontend cart array)
+              this.cart = []; // Clear the cart array on the frontend
 
-    // Optional: Handle UI updates
-    this.showProduct = true;
-    this.enableCartBtn = true;
+              // Optional: Handle UI updates
+              this.showProduct = true;
+              this.enableCartBtn = true;
             } catch (error) {
               console.error("Error adding activity to cart:", error);
             }
-
           },
           async updateInventory(activityId, spaces) {
             try {
@@ -512,7 +536,7 @@
             })
             .then((responseJSON) => {
               console.log("Response received:", responseJSON);
-            
+
               this.activities = responseJSON;
             })
             .catch((error) => {
