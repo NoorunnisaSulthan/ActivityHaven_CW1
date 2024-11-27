@@ -106,7 +106,7 @@
               </div>
             </div>
           </div>
-          <p>The response: <span id="response"></span></p>
+        
         </div>
 
         <div v-else class="josefin-sans-text cartSection">
@@ -282,9 +282,28 @@
 
               // Enable the cart button if needed
               this.enableCartBtn = true;
+
+              const clearCartResponse = await fetch("http://localhost:3000/collection/cart", {
+      method: "DELETE",
+    });
+
+    if (!clearCartResponse.ok) {
+      throw new Error(`Failed to clear cart: ${clearCartResponse.status}`);
+    }
+
+    const clearCartData = await clearCartResponse.json();
+    console.log("Cart cleared successfully:", clearCartData);
+
+    // Step 3: Update the cart state (e.g., empty the frontend cart array)
+    this.cart = []; // Clear the cart array on the frontend
+
+    // Optional: Handle UI updates
+    this.showProduct = true;
+    this.enableCartBtn = true;
             } catch (error) {
               console.error("Error adding activity to cart:", error);
             }
+
           },
           async updateInventory(activityId, spaces) {
             try {
