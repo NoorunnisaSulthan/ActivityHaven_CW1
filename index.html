@@ -512,8 +512,7 @@
             })
             .then((responseJSON) => {
               console.log("Response received:", responseJSON);
-              document.getElementById("response").innerText =
-                JSON.stringify(responseJSON);
+            
               this.activities = responseJSON;
             })
             .catch((error) => {
