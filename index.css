@@ -327,8 +327,19 @@ body {
   }
   .order-submitted{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-left: 5%;
+    margin-left: 0%;
+  }
+
+  .back-to-products-btn{
+    position: relative; /* Enables positioning of the cart-count span */
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 15px;
+   
   }
