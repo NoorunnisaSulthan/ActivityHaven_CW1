@@ -1,0 +1,90 @@
+{
+	"info": {
+		"_postman_id": "dff58596-0366-4121-99f9-b724e792dcdf",
+		"name": "Activity_haven",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32332938"
+	},
+	"item": [
+		{
+			"name": "get all activities",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "https://backend-activityhaven-cw1.onrender.com/collection/activities"
+			},
+			"response": []
+		},
+		{
+			"name": "add new activity",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"activity\": \"Coding for Kids\", \"location\": \"Tech Hub\", \"price\": 130, \"spaces\": 5, \"image\": \"images/code.jpeg\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://backend-activityhaven-cw1.onrender.com/collection/activities"
+			},
+			"response": []
+		},
+		{
+			"name": "update spaces",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"spaces\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://backend-activityhaven-cw1.onrender.com/collection/activities/6740d33fbb2eecff6c9cdc22"
+			},
+			"response": []
+		},
+		{
+			"name": "delete new activity",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "https://backend-activityhaven-cw1.onrender.com/collection/activities/67401a4a4c664c222832725e"
+			},
+			"response": []
+		},
+		{
+			"name": "Search activities",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://backend-activityhaven-cw1.onrender.com/search?q=abascus",
+					"protocol": "https",
+					"host": [
+						"backend-activityhaven-cw1",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "abascus"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
