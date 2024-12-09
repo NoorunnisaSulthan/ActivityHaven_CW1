@@ -264,7 +264,7 @@
             }
             try {
               const response = await fetch(
-                `http://localhost:3000/search?q=${encodeURIComponent(
+                `https://backend-activityhaven-cw1.onrender.com//search?q=${encodeURIComponent(
                   this.searchQuery
                 )}`
               );
@@ -280,7 +280,7 @@
           async addOrders(order, cart) {
             try {
               const response = await fetch(
-                "http://localhost:3000/collection/orders",
+                "https://backend-activityhaven-cw1.onrender.com/collection/orders",
                 {
                   method: "POST",
                   headers: {
@@ -301,7 +301,7 @@
               this.enableCartBtn = true;
 
               const clearCartResponse = await fetch(
-                "http://localhost:3000/collection/cart",
+                "https://backend-activityhaven-cw1.onrender.com/collection/cart",
                 {
                   method: "DELETE",
                 }
@@ -329,7 +329,7 @@
           async updateInventory(activityId, spaces) {
             try {
               const response = await fetch(
-                `http://localhost:3000/collection/activities/${activityId}`,
+                `https://backend-activityhaven-cw1.onrender.com/collection/activities/${activityId}`,
                 {
                   method: "PUT",
                   headers: {
@@ -398,7 +398,7 @@
             //  Add to cart
             try {
               const response = await fetch(
-                "http://localhost:3000/collection/cart",
+                "https://backend-activityhaven-cw1.onrender.com/collection/cart",
                 {
                   method: "POST",
                   headers: {
@@ -420,7 +420,7 @@
             } catch (error) {
               console.error("Error adding activity to cart:", error);
             }
-            fetch("http://localhost:3000/collection/cart", {
+            fetch("https://backend-activityhaven-cw1.onrender.com/collection/cart", {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
@@ -463,7 +463,7 @@
 
               //Send DELETE request to the backend
               const response = await fetch(
-                `http://localhost:3000/collection/cart/${id}`,
+                `https://backend-activityhaven-cw1.onrender.com/collection/cart/${id}`,
                 {
                   method: "DELETE", // DELETE request to remove the item
                   headers: {
@@ -493,7 +493,7 @@
 
               try {
               const response = await fetch(
-                `http://localhost:3000/collection/activities/${activity_id}`,
+                `https://backend-activityhaven-cw1.onrender.com/collection/activities/${activity_id}`,
                 {
                   method: "PUT",
                   headers: {
@@ -574,7 +574,7 @@
 
         created: function () {
           console.log("requesting data from server ...");
-          fetch("http://localhost:3000/collection/activities", {
+          fetch("https://backend-activityhaven-cw1.onrender.com/collection/activities", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -595,7 +595,7 @@
               console.error("Error:", error);
               document.getElementById("error").innerText = error.message;
             });
-          fetch("http://localhost:3000/collection/cart", {
+          fetch("https://backend-activityhaven-cw1.onrender.com/collection/cart", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
