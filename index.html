@@ -131,11 +131,11 @@
                   class="cart-product josefin-sans-text"
                   v-for="cartitem in cart"
                 >
-                  <img
-                    v-bind:src="cartitem.activity.image"
-                    alt="Activity"
-                    class="product-image"
-                  />
+                <img
+                v-bind:src="`https://backend-activityhaven-cw1.onrender.com/${cartitem.activity.image}`"
+                alt="Activity"
+                class="product-image"
+              />
                   <div class="product-details">
                     <h2 class="product-title">
                       {{ cartitem.activity.activity }}
