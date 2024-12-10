@@ -597,6 +597,23 @@
               console.error("Error:", error);
               document.getElementById("error").innerText = error.message;
             });
+
+            fetch("https://backend-activityhaven-cw1.onrender.com/collection/cart", {
+  method: "DELETE",
+})
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`Failed to clear cart: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log("Cart cleared successfully:", data);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
       //     fetch(
       //       "https://backend-activityhaven-cw1.onrender.com/collection/cart",
       //       {
