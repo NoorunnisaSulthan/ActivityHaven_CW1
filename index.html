@@ -169,7 +169,7 @@
                     <strong>First Name: </strong
                     ><input
                       v-model.trim="order.firstname"
-                      @blur="validateName(order.firstname)"
+                      @input="validateName(order.firstname)"
                     /><span v-if="nameError" class="error"
                       >{{ nameError }}</span
                     >
@@ -178,7 +178,7 @@
                     <strong>Last Name: </strong
                     ><input
                       v-model="order.lastname"
-                      @blur="validateName(order.lastname)"
+                      @input="validateName(order.lastname)"
                     /><span v-if="nameError" class="error"
                       >{{ nameError }}</span
                     >
@@ -187,7 +187,7 @@
                     <strong>Phone:</strong
                     ><input
                       v-model="order.phone"
-                      @blur="validatePhone(order.phone)"
+                      @input="validatePhone(order.phone)"
                     /><span v-if="phoneError" class="error"
                       >{{ phoneError }}</span
                     >
