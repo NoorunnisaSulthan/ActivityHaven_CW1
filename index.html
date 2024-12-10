@@ -6,7 +6,7 @@
     <title>Activity Haven</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
     <link rel="stylesheet" href="index.css" />
-  
+
     <!-- google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,22 +43,21 @@
       <main>
         <!-- display after order submitted successfully and return to home page -->
         <div v-if="orderSubmitted" class="order-submitted">
-          <div >
+          <div>
             <h2 class="unlock-regular">Order Submitted</h2>
-            <br>
+            <br />
             <h2 class="josefin-sans-text">Thank you for your purchase!</h2>
           </div>
-          <br>
+          <br />
           <div>
-          <button class="back-to-products-btn" @click="returnToProducts">
-            Continue Shopping
-          </button>
-        </div>
+            <button class="back-to-products-btn" @click="returnToProducts">
+              Continue Shopping
+            </button>
+          </div>
         </div>
 
         <!-- section to display all products in home page  -->
         <div v-else-if="showProduct" class="productsDiv main">
-
           <!--search bar-->
           <div class="searchSortdiv josefin-sans-text">
             <label>Search:</label>
@@ -93,9 +92,12 @@
               <div class="flip-card-inner">
                 <div class="flip-card-front">
                   <figure>
-                    <img v-bind:src="`https://backend-activityhaven-cw1.onrender.com/${activity.image}`" class="activityimg" />
+                    <img
+                      v-bind:src="`https://backend-activityhaven-cw1.onrender.com/${activity.image}`"
+                      class="activityimg"
+                    />
                   </figure>
-                  
+
                   <h3 class="unlock-regular">{{ activity.activity }}</h3>
                   <p class="josefin-sans-text">
                     Location: {{ activity.location }}
@@ -119,7 +121,7 @@
             </div>
           </div>
         </div>
-          <!-- product cart and checkout section  -->
+        <!-- product cart and checkout section  -->
         <div v-else class="josefin-sans-text cartSection">
           <div v-if="showCartItems" style="margin-left: 30px">
             <div class="cartProductsDiv">
@@ -131,11 +133,11 @@
                   class="cart-product josefin-sans-text"
                   v-for="cartitem in cart"
                 >
-                <img
-                v-bind:src="`https://backend-activityhaven-cw1.onrender.com/${cartitem.activity.image}`"
-                alt="Activity"
-                class="product-image"
-              />
+                  <img
+                    v-bind:src="`https://backend-activityhaven-cw1.onrender.com/${cartitem.activity.image}`"
+                    alt="Activity"
+                    class="product-image"
+                  />
                   <div class="product-details">
                     <h2 class="product-title">
                       {{ cartitem.activity.activity }}
@@ -230,22 +232,21 @@
           orderSubmitted: false,
         },
         computed: {
-
           cartItemCount() {
             return this.cart.length || "";
           },
           filteredAndSortedActivities() {
-
-    // Then sort the filtered activities
-    return this.activities.sort((a, b) => {
-      let modifier = this.sortOrder === "asc" ? 1 : -1;
-      if (this.sortBy === "price" || this.sortBy === "spaces") {
-        return (a[this.sortBy] - b[this.sortBy]) * modifier;
-      } else {
-        return a[this.sortBy].localeCompare(b[this.sortBy]) * modifier;
-      }
-    })},
-     
+            // Then sort the filtered activities
+            return this.activities.sort((a, b) => {
+              let modifier = this.sortOrder === "asc" ? 1 : -1;
+              if (this.sortBy === "price" || this.sortBy === "spaces") {
+                return (a[this.sortBy] - b[this.sortBy]) * modifier;
+              } else {
+                return a[this.sortBy].localeCompare(b[this.sortBy]) * modifier;
+              }
+            });
+          },
+          // returns boolean after validation
           canCheckout() {
             return (
               this.order.firstname &&
@@ -273,7 +274,7 @@
                 throw new Error("Failed to fetch search results");
               }
               const data = await response.json();
-              this.activities = data; 
+              this.activities = data;
             } catch (error) {
               console.error("Error fetching search results:", error);
             }
@@ -298,7 +299,6 @@
               const data = await response.json(); // Parse the server response
               console.log("Activity added to cart successfully:", data);
 
-          
               this.enableCartBtn = true;
 
               const clearCartResponse = await fetch(
@@ -317,10 +317,8 @@
               const clearCartData = await clearCartResponse.json();
               console.log("Cart cleared successfully:", clearCartData);
 
-            
               this.cart = []; // Clear the cart array on the frontend
 
-            
               this.showProduct = true;
               this.enableCartBtn = true;
             } catch (error) {
@@ -383,7 +381,7 @@
             const activityId = activity._id;
             const spaces = activity.spaces;
 
-        //Update the inventory
+            //Update the inventory
             const isInventoryUpdated = await this.updateInventory(
               activityId,
               spaces
@@ -421,12 +419,15 @@
             } catch (error) {
               console.error("Error adding activity to cart:", error);
             }
-            fetch("https://backend-activityhaven-cw1.onrender.com/collection/cart", {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            })
+            fetch(
+              "https://backend-activityhaven-cw1.onrender.com/collection/cart",
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            )
               .then((response) => {
                 if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
@@ -442,23 +443,22 @@
                 document.getElementById("error").innerText = error.message;
               });
           },
-          
+          //checks if inventory is available, to ensure that add to cart button is disabled or enabled accordingly
           canAddToCart(activity) {
             return (
               this.cart.filter((id) => id === activity.id).length <
               activity.spaces
             );
           },
-          // counts occurance of one element in the cart 
+          // counts occurance of one element in the cart
           cartCount(id) {
             return this.cart.filter((item) => item === id).length;
           },
 
-          
           showCart() {
             this.showProduct = !this.showProduct;
           },
-          async removefromcart(id,activity_id,spaces) {
+          async removefromcart(id, activity_id, spaces) {
             try {
               console.log(`Attempting to remove item with ID: ${id}`); // Log the ID
 
@@ -480,66 +480,62 @@
               // Success: Log the response
               const data = await response.json();
               console.log("Backend response:", data);
-              
+
               this.cart = data;
-
-
-            
 
               // If no items left in cart, show the product
               if (this.cart.length === 0) {
                 this.showProduct = true;
-                this.enableCartBtn=false;
+                this.enableCartBtn = false;
               }
 
               try {
-              const response = await fetch(
-                `https://backend-activityhaven-cw1.onrender.com/collection/activities/${activity_id}`,
-                {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({ spaces: spaces + 1 }), // Decrement inventory
-                }
-              );
-
-              if (!response.ok) {
-                throw new Error(
-                  `Failed to update inventory: ${response.status}`
+                const response = await fetch(
+                  `https://backend-activityhaven-cw1.onrender.com/collection/activities/${activity_id}`,
+                  {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ spaces: spaces + 1 }), // Decrement inventory
+                  }
                 );
-              }
 
-              const updatedActivity = await response.json(); // Parse the updated activity from the response
-              console.log(
-                "Updated activity response:",
-                updatedActivity.msg.spaces
-              );
-
-              // Find the activity in the local state
-              const index = this.activities.findIndex(
-                (activity) => activity._id === activity_id
-              );
-
-              if (index !== -1) {
-                
-                if (updatedActivity.msg.spaces !== undefined) {
-                  this.activities[index].spaces = updatedActivity.msg.spaces;
-                } else {
-                  console.error(
-                    "Updated activity does not contain spaces field!"
+                if (!response.ok) {
+                  throw new Error(
+                    `Failed to update inventory: ${response.status}`
                   );
                 }
-              } else {
-                console.error("Activity not found in local state!");
-              }
 
-              console.log("Inventory updated successfully:", updatedActivity);
-              return true; // Indicate success
-            } catch (error) {
-              console.error("Error updating inventory:", error);
-              return false; // Indicate failure
-            }
+                const updatedActivity = await response.json(); // Parse the updated activity from the response
+                console.log(
+                  "Updated activity response:",
+                  updatedActivity.msg.spaces
+                );
+
+                // Find the activity in the local state
+                const index = this.activities.findIndex(
+                  (activity) => activity._id === activity_id
+                );
+
+                if (index !== -1) {
+                  if (updatedActivity.msg.spaces !== undefined) {
+                    this.activities[index].spaces = updatedActivity.msg.spaces;
+                  } else {
+                    console.error(
+                      "Updated activity does not contain spaces field!"
+                    );
+                  }
+                } else {
+                  console.error("Activity not found in local state!");
+                }
+
+                console.log("Inventory updated successfully:", updatedActivity);
+                return true; // Indicate success
+              } catch (error) {
+                console.error("Error updating inventory:", error);
+                return false; // Indicate failure
+              }
             } catch (error) {
               console.error("Error removing item from cart:", error);
             }
@@ -556,31 +552,36 @@
               ? ""
               : "Phone number must contain numbers only.";
           },
+          //order submitted page
           showCheckout() {
             if (this.canCheckout) {
               this.orderSubmitted = true;
               this.showCartItems = false;
             }
           },
+          //function to execute after clicking on continue shopping
           returnToProducts() {
             this.enableCartBtn = false;
             this.orderSubmitted = false;
-            this.searchQuery="";
+            this.searchQuery = "";
             this.activities = activities;
             this.showProduct = true;
-            this.cart = []; 
-            this.order = { firstname: "", lastname: "", phone: "" }; 
+            this.cart = [];
+            this.order = { firstname: "", lastname: "", phone: "" };
           },
         },
 
         created: function () {
           console.log("requesting data from server ...");
-          fetch("https://backend-activityhaven-cw1.onrender.com/collection/activities", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
+          fetch(
+            "https://backend-activityhaven-cw1.onrender.com/collection/activities",
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
             .then((response) => {
               if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -596,28 +597,31 @@
               console.error("Error:", error);
               document.getElementById("error").innerText = error.message;
             });
-          fetch("https://backend-activityhaven-cw1.onrender.com/collection/cart", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-              }
-              return response.json();
-            })
-            .then((responseJSON) => {
-              console.log("Response received:", responseJSON);
-              this.cart = responseJSON;
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              document.getElementById("error").innerText = error.message;
-            });
-        },
-      });
+      //     fetch(
+      //       "https://backend-activityhaven-cw1.onrender.com/collection/cart",
+      //       {
+      //         method: "GET",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //         },
+      //       }
+      //     )
+      //       .then((response) => {
+      //         if (!response.ok) {
+      //           throw new Error(`HTTP error! Status: ${response.status}`);
+      //         }
+      //         return response.json();
+      //       })
+      //       .then((responseJSON) => {
+      //         console.log("Response received:", responseJSON);
+      //         this.cart = responseJSON;
+      //       })
+      //       .catch((error) => {
+      //         console.error("Error:", error);
+      //         document.getElementById("error").innerText = error.message;
+      //       });
+       },
+       });
     </script>
   </body>
 </html>
